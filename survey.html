@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Litter &amp; Cleanup Habits Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,800&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDEEE2;
+    --paper-2:#E4E5D6;
+    --ink:#23271E;
+    --ink-soft:#4B5142;
+    --moss:#3F5C3A;
+    --moss-dark:#2E4429;
+    --fern:#7C9A6C;
+    --litter:#B4502A;
+    --water:#3E6E82;
+    --card-bg:#F7F7EF;
+    --radius:14px;
+    --shadow: 0 1px 2px rgba(35,39,30,0.06), 0 6px 18px rgba(35,39,30,0.06);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- progress bar ---------- */
+  .progress-track{
+    position:fixed;
+    top:0; left:0; right:0;
+    height:4px;
+    background:var(--paper-2);
+    z-index:50;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--fern), var(--moss));
+    transition:width .15s ease-out;
+  }
+
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:56px 24px 100px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align:center;
+    padding-bottom:28px;
+  }
+
+  .hero-scene{
+    position:relative;
+    height:120px;
+    margin:0 auto 28px;
+    max-width:420px;
+  }
+  .ground-line{
+    position:absolute;
+    bottom:28px; left:0; right:0;
+    height:0;
+    border-top:2px dashed var(--ink-soft);
+    opacity:.35;
+  }
+  .bin{
+    position:absolute;
+    bottom:20px; right:6px;
+    font-size:30px;
+    animation:binPulse 2s ease-in-out infinite;
+  }
+  .litter-item{
+    position:absolute;
+    bottom:34px;
+    font-size:22px;
+    animation:vanish 8s ease-in-out infinite;
+  }
+  .litter-item.i1{ left:6%; animation-delay:0s; }
+  .litter-item.i2{ left:32%; animation-delay:2s; }
+  .litter-item.i3{ left:58%; animation-delay:4s; }
+  .litter-item.i4{ left:80%; animation-delay:6s; }
+
+  @keyframes vanish{
+    0%, 8%   { opacity:1; transform:scale(1) translateY(0) rotate(0deg); }
+    15%, 92% { opacity:0; transform:scale(.3) translateY(-16px) rotate(25deg); }
+    100%     { opacity:1; transform:scale(1) translateY(0) rotate(0deg); }
+  }
+  @keyframes binPulse{
+    0%, 88%, 100% { transform:scale(1); }
+    93%           { transform:scale(1.18) rotate(-4deg); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .litter-item, .bin{ animation:none; }
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:800;
+    font-size:clamp(28px, 5vw, 40px);
+    line-height:1.15;
+    margin:0 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .subhead{
+    font-size:17px;
+    color:var(--ink-soft);
+    max-width:480px;
+    margin:0 auto 10px;
+  }
+  .meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--moss);
+  }
+
+  /* ---------- questions ---------- */
+  form{
+    margin-top:36px;
+    display:flex;
+    flex-direction:column;
+    gap:40px;
+  }
+  .question{
+    padding-top:8px;
+    border-top:1px solid var(--paper-2);
+  }
+  .q-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--water);
+    margin:0 0 10px;
+  }
+  .q-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:21px;
+    margin:0 0 18px;
+    line-height:1.3;
+  }
+  .optional{
+    font-weight:400;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  /* toggle cards (radio & checkbox) */
+  .toggle-cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .toggle-cards.stack{ grid-template-columns:1fr; }
+
+  .card{
+    position:relative;
+    display:block;
+    cursor:pointer;
+  }
+  .card input{
+    position:absolute;
+    opacity:0;
+    width:1px; height:1px;
+  }
+  .card-body{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 16px;
+    background:var(--card-bg);
+    border:1.5px solid var(--paper-2);
+    border-radius:var(--radius);
+    font-size:15px;
+    transition:border-color .15s ease, background .15s ease, color .15s ease, transform .1s ease;
+  }
+  .card input:checked + .card-body{
+    background:var(--moss);
+    border-color:var(--moss);
+    color:#fff;
+  }
+  .card:hover .card-body{
+    border-color:var(--fern);
+  }
+  .card input:focus-visible + .card-body{
+    outline:2px solid var(--water);
+    outline-offset:2px;
+  }
+  .card:active .card-body{ transform:scale(.98); }
+
+  /* slider */
+  .slider-wrap{ padding:6px 4px 0; }
+  input[type="range"]{
+    width:100%;
+    accent-color:var(--moss);
+  }
+  .slider-ticks{
+    display:flex;
+    justify-content:space-between;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
+  /* text inputs */
+  textarea, input[type="text"]{
+    width:100%;
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    padding:14px 16px;
+    border:1.5px solid var(--paper-2);
+    border-radius:var(--radius);
+    background:var(--card-bg);
+    color:var(--ink);
+    resize:vertical;
+  }
+  textarea:focus, input[type="text"]:focus{
+    outline:2px solid var(--water);
+    outline-offset:1px;
+    border-color:var(--water);
+  }
+  label.field-label{
+    display:block;
+    font-size:15px;
+    margin-bottom:10px;
+  }
+  .other-reveal{
+    margin-top:10px;
+    display:none;
+  }
+  .other-reveal.show{ display:block; }
+
+  /* submit */
+  .submit-row{
+    text-align:center;
+    padding-top:8px;
+  }
+  .submit-stamp{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    background:var(--moss);
+    color:#fff;
+    border:none;
+    border-radius:100px;
+    padding:16px 36px;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .submit-stamp:hover{ background:var(--moss-dark); }
+  .submit-stamp:active{ transform:scale(.97); }
+  .submit-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:12px;
+  }
+
+  /* thank you */
+  .thank-you{
+    text-align:center;
+    padding:80px 24px;
+    max-width:480px;
+    margin:0 auto;
+  }
+  .thank-you h2{
+    font-family:'Fraunces', serif;
+    font-weight:800;
+    font-size:32px;
+    margin-bottom:12px;
+  }
+  .thank-you .stamp-mark{
+    font-size:40px;
+    margin-bottom:18px;
+    display:inline-block;
+  }
+
+  [hidden]{ display:none !important; }
+
+  @media (max-width:480px){
+    .toggle-cards{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<main>
+  <header class="hero">
+    <div class="hero-scene" aria-hidden="true">
+      <div class="ground-line"></div>
+      <span class="litter-item i1">🍾</span>
+      <span class="litter-item i2">🥤</span>
+      <span class="litter-item i3">🧃</span>
+      <span class="litter-item i4">🍫</span>
+hamburger
+Unicode: U+1F354, UTF-8: F0 9F 8D 94"
+      <span class="bin">🗑️</span>
+    </div>
+    <h1>Do you pick it up,<br>or walk on by?</h1>
+    <p class="subhead">A short, anonymous survey about litter and cleanup habits where you live — help us understand what's really going on out there.</p>
+    <p class="meta">6 questions · Anonymous · ~2 min</p>
+  </header>
+
+  <form id="surveyForm">
+
+    <section class="question">
+      <p class="q-label">Checkpoint 1 of 6</p>
+      <h2 class="q-title">When you spot rubbish on the ground what do you do with the rubbish?</h2>
+      <div class="toggle-cards">
+        <label class="card">
+          <input type="radio" name="q1" value="pick-up" required>
+          <span class="card-body"> Pick it up and place it in a bin</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q1" value="leave-it">
+          <span class="card-body"> Leave it and go on with your day</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q1" value="depends">
+          <span class="card-body"> Depends on what it is</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q1" value="dont-notice">
+          <span class="card-body">Take it to a supermarket and redeem it for money</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="question">
+      <p class="q-label">Checkpoint 2 of 6</p>
+      <h2 class="q-title">How often would you say you litter?</h2>
+      <div class="slider-wrap">
+        <input type="range" id="q2" name="q2" min="0" max="3" step="1" value="0">
+        <div class="slider-ticks">
+          <span>Never</span><span>Rarely</span><span>Sometimes</span><span>Often</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="question">
+      <p class="q-label">Checkpoint 3 of 6</p>
+      <h2 class="q-title">Have you ever taken part in a community clean-up event?</h2>
+      <div class="toggle-cards">
+        <label class="card">
+          <input type="radio" name="q3" value="yes-many" required>
+          <span class="card-body"> Yes more than once</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q3" value="yes-once">
+          <span class="card-body">Yes once</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q3" value="no-interested">
+          <span class="card-body"> No but I'd like to</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q3" value="no-not-interested">
+          <span class="card-body">No,i dont have interest</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="question">
+      <p class="q-label">Checkpoint 4 of 6</p>
+      <h2 class="q-title">Where do you most often see litter? <span class="optional">(pick all that apply)</span></h2>
+      <div class="toggle-cards">
+        <label class="card">
+          <input type="checkbox" name="q4" value="streets">
+          <span class="card-body">Streets &amp; sidewalks</span>
+        </label>
+        <label class="card">
+          <input type="checkbox" name="q4" value="parks">
+          <span class="card-body"> Parks &amp; trails</span>
+        </label>
+        <label class="card">
+          <input type="checkbox" name="q4" value="waterways">
+          <span class="card-body"> Beaches &amp; waterways</span>
+        </label>
+        <label class="card">
+          <input type="checkbox" name="q4" value="parking">
+          <span class="card-body"> Parking lots</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="question">
+      <p class="q-label">Checkpoint 5 of 6</p>
+      <h2 class="q-title">What's the biggest reason people litter in your opinion?</h2>
+      <div class="toggle-cards stack">
+        <label class="card">
+          <input type="radio" name="q5" value="no-bins" required>
+          <span class="card-body">There's nowhere nearby to discard it</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q5" value="laziness">
+          <span class="card-body">laziness</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q5" value="dont-care">
+          <span class="card-body">don't think it matters</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q5" value="habit">
+          <span class="card-body"> It's just habit</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q5" value="other" id="q5other">
+          <span class="card-body">✏Something else</span>
+        </label>
+      </div>
+      <div class="other-reveal" id="q5otherWrap">
+        <input type="text" name="q5_other_text" placeholder="What's your take?">
+      </div>
+    </section>
+
+    <section class="question">
+      <p class="q-label">Checkpoint 6 of 6</p>
+      <h2 class="q-title">Anything that would make it easier to keep your area clean?</h2>
+      <textarea name="q6" rows="4" placeholder="More bins, better signage, regular clean-up days — whatever comes to mind."></textarea>
+    </section>
+
+    <section class="question">
+      <label class="field-label" for="area">Which suburb or area are you answering for? <span class="optional">(optional)</span></label>
+      <input type="text" id="area" name="area" placeholder="e.g. Ponsonby">
+    </section>
+
+    <div class="submit-row">
+      <button type="submit" class="submit-stamp">Submit response</button>
+      <p class="submit-note">Your answers are anonymous — no names, no tracking.</p>
+    </div>
+
+  </form>
+
+  <div class="thank-you" id="thankYou" hidden>
+    <span class="stamp-mark">✅</span>
+    <h2>Thanks — logged.</h2>
+    <p></p>
+  </div>
+</main>
+
+<script>
+  // scroll progress
+  const progressFill = document.getElementById('progressFill');
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressFill.style.width = Math.min(pct, 100) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  // "other" reveal on Q5
+  const q5other = document.getElementById('q5other');
+  const q5otherWrap = document.getElementById('q5otherWrap');
+  document.querySelectorAll('input[name="q5"]').forEach(input => {
+    input.addEventListener('change', () => {
+      q5otherWrap.classList.toggle('show', q5other.checked);
+    });
+  });
+
+  // submit handling
+  const form = document.getElementById('surveyForm');
+  const thankYou = document.getElementById('thankYou');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.hidden = true;
+    thankYou.hidden = false;
+    thankYou.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+</script>
+
+</body>
+</html>
