@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,800&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDEEE2;
+    --paper-2:#E4E5D6;
+    --ink:#23271E;
+    --ink-soft:#4B5142;
+    --moss:#3F5C3A;
+    --moss-dark:#2E4429;
+    --fern:#7C9A6C;
+    --water:#3E6E82;
+    --card-bg:#F7F7EF;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- progress bar ---------- */
+  .progress-track{
+    position:fixed;
+    top:0; left:0; right:0;
+    height:4px;
+    background:var(--paper-2);
+    z-index:50;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--fern), var(--moss));
+    transition:width .15s ease-out;
+  }
+
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:56px 24px 100px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align:center;
+    padding-bottom:28px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:800;
+    font-size:clamp(28px, 5vw, 40px);
+    line-height:1.15;
+    margin:0 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .subhead{
+    font-size:17px;
+    color:var(--ink-soft);
+    max-width:480px;
+    margin:0 auto 10px;
+  }
+  .meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--moss);
+  }
+
+  /* ---------- questions ---------- */
+  form{
+    margin-top:36px;
+    display:flex;
+    flex-direction:column;
+    gap:40px;
+  }
+  .question{
+    padding-top:8px;
+    border-top:1px solid var(--paper-2);
+  }
+  .q-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--water);
+    margin:0 0 10px;
+  }
+  .q-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:21px;
+    margin:0 0 18px;
+    line-height:1.3;
+  }
+  .optional{
+    font-weight:400;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  /* toggle cards (radio & checkbox) */
+  .toggle-cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .toggle-cards.stack{ grid-template-columns:1fr; }
+
+  .card{
+    position:relative;
+    display:block;
+    cursor:pointer;
+  }
+  .card input{
+    position:absolute;
+    opacity:0;
+    width:1px; height:1px;
+  }
+  .card-body{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 16px;
+    background:var(--card-bg);
+    border:1.5px solid var(--paper-2);
+    border-radius:var(--radius);
+    font-size:15px;
+    transition:border-color .15s ease, background .15s ease, color .15s ease, transform .1s ease;
+  }
+  .card input:checked + .card-body{
+    background:var(--moss);
+    border-color:var(--moss);
+    color:#fff;
+  }
+  .card:hover .card-body{
+    border-color:var(--fern);
+  }
+  .card input:focus-visible + .card-body{
+    outline:2px solid var(--water);
+    outline-offset:2px;
+  }
+  .card:active .card-body{ transform:scale(.98); }
+
+  /* slider */
+  .slider-wrap{ padding:6px 4px 0; }
+  input[type="range"]{
+    width:100%;
+    accent-color:var(--moss);
+  }
+  .slider-ticks{
+    display:flex;
+    justify-content:space-between;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
+  /* text inputs */
+  textarea, input[type="text"]{
+    width:100%;
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    padding:14px 16px;
+    border:1.5px solid var(--paper-2);
+    border-radius:var(--radius);
+    background:var(--card-bg);
+    color:var(--ink);
+    resize:vertical;
+  }
+  textarea:focus, input[type="text"]:focus{
+    outline:2px solid var(--water);
+    outline-offset:1px;
+    border-color:var(--water);
+  }
+  label.field-label{
+    display:block;
+    font-size:15px;
+    margin-bottom:10px;
+  }
+  .other-reveal{
+    margin-top:10px;
+    display:none;
+  }
+  .other-reveal.show{ display:block; }
+
+  /* submit */
+  .submit-row{
+    text-align:center;
+    padding-top:8px;
+  }
+  .submit-stamp{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    background:var(--moss);
+    color:#fff;
+    border:none;
+    border-radius:100px;
+    padding:16px 36px;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .submit-stamp:hover{ background:var(--moss-dark); }
+  .submit-stamp:active{ transform:scale(.97); }
+  .submit-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:12px;
+  }
+
+  /* thank you */
+  .thank-you{
+    text-align:center;
+    padding:80px 24px;
+    max-width:480px;
+    margin:0 auto;
+  }
+  .thank-you h2{
+    font-family:'Fraunces', serif;
+    font-weight:800;
+    font-size:32px;
+    margin-bottom:12px;
+  }
+  .thank-you .stamp-mark{
+    font-size:40px;
+    margin-bottom:18px;
+    display:inline-block;
+  }
+
+  [hidden]{ display:none !important; }
+
+  @media (max-width:480px){
+    .toggle-cards{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<main>
+  <header class="hero">
+    <h1>Exibition Servey</h1>
+    <p class="subhead"></p>
+    <p class="meta">6 questions · Anonymous · ~2 min</p>
+  </header>
+
+  <form id="surveyForm">
+
+    <!-- ===== EXAMPLE 1: single-choice radio toggle cards ===== -->
+    <section class="question">
+      <p class="q-label">Checkpoint 1</p>
+      <h2 class="q-title">Why do you think a war happens</h2>
+      <div class="toggle-cards">
+        <label class="card">
+          <input type="radio" name="q1" value="option-a" required>
+          <span class="card-body">Wants more land or resorces</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q1" value="option-b">
+          <span class="card-body">Wants to become more stronger</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q1" value="option-c">
+          <span class="card-body">Fear of other country becoming more stronger</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q1" value="option-d">
+          <span class="card-body">Does not like other country</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ===== EXAMPLE 2: slider question ===== -->
+    <section class="question">
+      <p class="q-label">Checkpoint 2</p>
+      <h2 class="q-title">How much do you care about war?</h2>
+      <div class="slider-wrap">
+        <input type="range" id="q2" name="q2" min="0" max="3" step="1" value="0">
+        <div class="slider-ticks">
+          <span>Could not care less</span><span>Somewhat</span><span>I care</span><span>I really care</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EXAMPLE 3: multi-select checkbox toggle cards ===== -->
+    <section class="question">
+      <p class="q-label">Checkpoint 3</p>
+      <h2 class="q-title">What are some ways we can help in a war? <span class="optional">(pick all that apply)</span></h2>
+      <div class="toggle-cards">
+        <label class="card">
+          <input type="checkbox" name="q3" value="option-a">
+          <span class="card-body">Donate money to humanitarion orgisations</span>
+        </label>
+        <label class="card">
+          <input type="checkbox" name="q3" value="option-b">
+          <span class="card-body">Showing refugess respect and equity</span>
+        </label>
+        <label class="card">
+          <input type="checkbox" name="q3" value="option-c">
+          <span class="card-body">Spreading awareness</span>
+        </label>
+        <label class="card">
+          <input type="checkbox" name="q3" value="option-d">
+          <span class="card-body">Donating stuff we dont need</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ===== EXAMPLE 4: single-choice with "Other" text reveal ===== -->
+    <section class="question">
+      <p class="q-label">Checkpoint 4</p>
+      <h2 class="q-title">If you had the power to stop a war, what would you do?</h2>
+      <div class="toggle-cards stack">
+        <label class="card">
+          <input type="radio" name="q4" value="option-a" required>
+          <span class="card-body">Seek revenge and attack them</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q4" value="option-b">
+          <span class="card-body">Making sure everybody is equal</span>
+        </label>
+        <label class="card">
+          <input type="radio" name="q4" value="other" id="q4other">
+          <span class="card-body">Something else</span>
+        </label>
+      </div>
+      <div class="other-reveal" id="q4otherWrap">
+        <input type="text" name="q4_other_text" placeholder="Tell us more...">
+      </div>
+    </section>
+
+
+    <!-- ===== EXAMPLE 6: optional single-line text field ===== -->
+    <section class="question">
+      <label class="field-label" for="extra">Whats your name? <span class="optional">(optional)</span></label>
+      <input type="text" id="extra" name="extra" placeholder="your name here">
+    </section>
+
+    <div class="submit-row">
+      <button type="submit" class="submit-stamp">Submit response</button>
+      <p class="submit-note"></p>
+    </div>
+
+  </form>
+
+  <div class="thank-you" id="thankYou" hidden>
+    <span class="stamp-mark">✅</span>
+    <h2>Thanks — logged.</h2>
+    <p>Your response has been recorded.</p>
+  </div>
+</main>
+
+<script>
+  // scroll progress
+  const progressFill = document.getElementById('progressFill');
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressFill.style.width = Math.min(pct, 100) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  // "other" reveal example (tied to q4)
+  const q4other = document.getElementById('q4other');
+  const q4otherWrap = document.getElementById('q4otherWrap');
+  document.querySelectorAll('input[name="q4"]').forEach(input => {
+    input.addEventListener('change', () => {
+      q4otherWrap.classList.toggle('show', q4other.checked);
+    });
+  });
+
+  // ===== PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE (optional) =====
+  const SCRIPT_URL = "PASTE_YOUR_EXEC_URL_HERE";
+  // =======================================================================
+
+  // submit handling
+  const form = document.getElementById('surveyForm');
+  const thankYou = document.getElementById('thankYou');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Example of reading a slider value back into a label —
+    // edit this array to match your own slider's tick labels.
+    const q2Labels = ['Label 1', 'Label 2', 'Label 3', 'Label 4'];
+    const q3Checked = Array.from(document.querySelectorAll('input[name="q3"]:checked'))
+      .map(i => i.value).join(', ');
+
+    const payload = new URLSearchParams();
+    payload.append('q1', form.q1.value || '');
+    payload.append('q2', q2Labels[form.q2.value] || '');
+    payload.append('q3', q3Checked);
+    payload.append('q4', form.q4.value || '');
+    payload.append('q4_other_text', form.q4_other_text.value || '');
+    payload.append('q5', form.q5.value || '');
+    payload.append('extra', form.extra.value || '');
+
+    // Comment this fetch block out if you don't want to send to Google Sheets.
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: payload
+    }).catch(() => {});
+
+    form.hidden = true;
+    thankYou.hidden = false;
+    thankYou.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+</script>
+
+</body>
+</html>          <input type="checkbox" name="q3" value="option-d">
