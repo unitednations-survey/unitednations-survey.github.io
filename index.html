@@ -381,6 +381,7 @@
   // =======================================================================
 
   // submit handling
+   // submit handling
   const form = document.getElementById('surveyForm');
   const thankYou = document.getElementById('thankYou');
   form.addEventListener('submit', (e) => {
@@ -398,18 +399,20 @@
     payload.append('q4_other_text', form.q4_other_text.value || '');
     payload.append('extra', form.extra.value || '');
 
-    // Comment this fetch block out if you don't want to send to Google Sheets.
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: payload
-    }).catch(() => {});
+    // Only attempt to send to Google Sheets if a real URL has been set.
+    if (SCRIPT_URL && SCRIPT_URL !== "PASTE_YOUR_EXEC_URL_HERE") {
+      try {
+        fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: payload
+        }).catch(() => {});
+      } catch (err) {
+        console.warn('Could not send to Google Sheets:', err);
+      }
+    }
 
     form.hidden = true;
     thankYou.hidden = false;
     thankYou.scrollIntoView({ behavior:'smooth', block:'start' });
   });
-</script>
-
-</body>
-</html></html>          <input type="checkbox" name="q3" value="option-d">
