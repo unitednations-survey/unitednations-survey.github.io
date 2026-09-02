@@ -33,7 +33,6 @@
     -webkit-font-smoothing:antialiased;
   }
 
-  /* ---------- progress bar ---------- */
   .progress-track{
     position:fixed;
     top:0; left:0; right:0;
@@ -54,7 +53,6 @@
     padding:56px 24px 100px;
   }
 
-  /* ---------- hero ---------- */
   .hero{
     text-align:center;
     padding-bottom:28px;
@@ -81,7 +79,6 @@
     color:var(--moss);
   }
 
-  /* ---------- questions ---------- */
   form{
     margin-top:36px;
     display:flex;
@@ -113,7 +110,6 @@
     color:var(--ink-soft);
   }
 
-  /* toggle cards (radio & checkbox) */
   .toggle-cards{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -156,7 +152,6 @@
   }
   .card:active .card-body{ transform:scale(.98); }
 
-  /* slider */
   .slider-wrap{ padding:6px 4px 0; }
   input[type="range"]{
     width:100%;
@@ -171,7 +166,6 @@
     margin-top:6px;
   }
 
-  /* text inputs */
   textarea, input[type="text"]{
     width:100%;
     font-family:'Work Sans', sans-serif;
@@ -199,7 +193,6 @@
   }
   .other-reveal.show{ display:block; }
 
-  /* submit */
   .submit-row{
     text-align:center;
     padding-top:8px;
@@ -225,7 +218,6 @@
     margin-top:12px;
   }
 
-  /* thank you */
   .thank-you{
     text-align:center;
     padding:80px 24px;
@@ -264,7 +256,6 @@
 
   <form id="surveyForm">
 
-    <!-- ===== EXAMPLE 1: single-choice radio toggle cards ===== -->
     <section class="question">
       <p class="q-label">Checkpoint 1</p>
       <h2 class="q-title">Why do you think a war happens</h2>
@@ -288,7 +279,6 @@
       </div>
     </section>
 
-    <!-- ===== EXAMPLE 2: slider question ===== -->
     <section class="question">
       <p class="q-label">Checkpoint 2</p>
       <h2 class="q-title">How much do you care about war?</h2>
@@ -300,7 +290,6 @@
       </div>
     </section>
 
-    <!-- ===== EXAMPLE 3: multi-select checkbox toggle cards ===== -->
     <section class="question">
       <p class="q-label">Checkpoint 3</p>
       <h2 class="q-title">What are some ways we can help in a war? <span class="optional">(pick all that apply)</span></h2>
@@ -324,7 +313,6 @@
       </div>
     </section>
 
-    <!-- ===== EXAMPLE 4: single-choice with "Other" text reveal ===== -->
     <section class="question">
       <p class="q-label">Checkpoint 4</p>
       <h2 class="q-title">If you had the power to stop a war, what would you do?</h2>
@@ -347,8 +335,6 @@
       </div>
     </section>
 
-
-    <!-- ===== EXAMPLE 6: optional single-line text field ===== -->
     <section class="question">
       <label class="field-label" for="extra">Whats your name? <span class="optional">(optional)</span></label>
       <input type="text" id="extra" name="extra" placeholder="your name here">
@@ -400,9 +386,7 @@
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Example of reading a slider value back into a label —
-    // edit this array to match your own slider's tick labels.
-    const q2Labels = ['Label 1', 'Label 2', 'Label 3', 'Label 4'];
+    const q2Labels = ['Could not care less', 'Somewhat', 'I care', 'I really care'];
     const q3Checked = Array.from(document.querySelectorAll('input[name="q3"]:checked'))
       .map(i => i.value).join(', ');
 
@@ -412,7 +396,6 @@
     payload.append('q3', q3Checked);
     payload.append('q4', form.q4.value || '');
     payload.append('q4_other_text', form.q4_other_text.value || '');
-    payload.append('q5', form.q5.value || '');
     payload.append('extra', form.extra.value || '');
 
     // Comment this fetch block out if you don't want to send to Google Sheets.
@@ -429,4 +412,4 @@
 </script>
 
 </body>
-</html>          <input type="checkbox" name="q3" value="option-d">
+</html></html>          <input type="checkbox" name="q3" value="option-d">
