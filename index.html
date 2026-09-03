@@ -382,6 +382,12 @@
 
   // submit handling
    // submit handling
+    // ===== ntfy.sh setup =====
+  // Pick your own secret topic name (letters/numbers, hard to guess).
+  const NTFY_TOPIC = "warexhibit-survey-x7q2p";
+  // ==========================
+
+  // submit handling
   const form = document.getElementById('surveyForm');
   const thankYou = document.getElementById('thankYou');
   form.addEventListener('submit', (e) => {
@@ -391,14 +397,22 @@
     const q3Checked = Array.from(document.querySelectorAll('input[name="q3"]:checked'))
       .map(i => i.value).join(', ');
 
-    const payload = new URLSearchParams();
-    payload.append('q1', form.q1.value || '');
-    payload.append('q2', q2Labels[form.q2.value] || '');
-    payload.append('q3', q3Checked);
-    payload.append('q4', form.q4.value || '');
-    payload.append('q4_other_text', form.q4_other_text.value || '');
-    payload.append('extra', form.extra.value || '');
+    const message =
+      `Q1: ${form.q1.value || ''}\n` +
+      `Q2: ${q2Labels[form.q2.value] || ''}\n` +
+      `Q3: ${q3Checked}\n` +
+      `Q4: ${form.q4.value || ''}${form.q4_other_text.value ? ' (' + form.q4_other_text.value + ')' : ''}\n` +
+      `Name: ${form.extra.value || ''}`;
 
+    fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
+      method: 'POST',
+      body: message
+    }).catch(() => {});
+
+    form.hidden = true;
+    thankYou.hidden = false;
+    thankYou.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
     // Only attempt to send to Google Sheets if a real URL has been set.
     if (SCRIPT_URL && SCRIPT_URL !== "PASTE_YOUR_EXEC_URL_HERE") {
       try {
