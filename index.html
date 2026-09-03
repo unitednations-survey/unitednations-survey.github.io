@@ -376,14 +376,7 @@
     });
   });
 
-  // ===== PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE (optional) =====
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw04Xu6Za5u9qS5QY-Di5nGg8SJTGVxpv2m7WXcI4vVQRJQOWEFowovBLZ4-ddQOLMvBw/exec";
-  // =======================================================================
-
-  // submit handling
-   // submit handling
-    // ===== ntfy.sh setup =====
-  // Pick your own secret topic name (letters/numbers, hard to guess).
+  // ===== ntfy.sh setup =====
   const NTFY_TOPIC = "warexhibit-survey-x7q2p";
   // ==========================
 
@@ -413,23 +406,7 @@
     thankYou.hidden = false;
     thankYou.scrollIntoView({ behavior:'smooth', block:'start' });
   });
-    // Only attempt to send to Google Sheets if a real URL has been set.
-    if (SCRIPT_URL && SCRIPT_URL !== "PASTE_YOUR_EXEC_URL_HERE") {
-      try {
-        fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: payload
-        }).catch(() => {});
-      } catch (err) {
-        console.warn('Could not send to Google Sheets:', err);
-      }
-    }
-
-    form.hidden = true;
-    thankYou.hidden = false;
-    thankYou.scrollIntoView({ behavior:'smooth', block:'start' });
-  );
 </script>
+
 </body>
 </html>
